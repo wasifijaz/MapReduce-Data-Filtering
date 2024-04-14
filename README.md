@@ -2,75 +2,71 @@
 
 [**Table of Contents 1**](#_mw4qo7fcuxga)
 
-[**Block 4 2**](#_3yhb787xkpr9)
+[**Block 4**](#_3yhb787xkpr9)
 
-[Problem Statement 2](#_mqfn7mllarcc)
+[Problem Statement](#_mqfn7mllarcc)
 
-[Task: 2](#_kjdk6djsaf4a)
+[Task:](#_kjdk6djsaf4a)
 
-[Solution: 3](#_bp5v5aknry3u)
+[Solution:](#_bp5v5aknry3u)
 
-[GCP Cluster 3](#_p8ccgi1xm9ol)
+[GCP Cluster](#_p8ccgi1xm9ol)
 
-[Creation of GCP Cluster: 3](#_420k1ujeoymf)
+[Creation of GCP Cluster:](#_420k1ujeoymf)
 
-[Mapper 3](#_hl44mdrhdr77)
+[Mapper](#_hl44mdrhdr77)
 
-[a. Method Overview: 3](#_scl9zuomprye)
+[a. Method Overview:](#_scl9zuomprye)
 
-[How the Mapper Script Works 4](#_dn568fk8hqd1)
+[How the Mapper Script Works](#_dn568fk8hqd1)
 
-[b. Mapper Code: 4](#_b2sds18qjhzk)
+[b. Mapper Output Local:](#_cbnbbmxvuwfg)
 
-[c. Mapper Output Local: 5](#_cbnbbmxvuwfg)
+[Local System Execution Steps & Commands:](#_1bravpe2bbo6)
 
-[Local System Execution Steps & Commands: 5](#_1bravpe2bbo6)
+[GCP Master Node Local Execution Steps & Commands:](#_nts4ihcla8hk)
 
-[GCP Master Node Local Execution Steps & Commands: 5](#_nts4ihcla8hk)
+[Beautified Local Mapper Output:](#_5xli1mwdprn4)
 
-[Beautified Local Mapper Output: 5](#_5xli1mwdprn4)
+[c. Mapper Output Hadoop (GCP Cluster):](#_mn1dafk4yh8s)
 
-[d. Mapper Output Hadoop (GCP Cluster): 6](#_mn1dafk4yh8s)
+[Steps & Commands:](#_wdyrivqqijnu)
 
-[Steps & Commands: 6](#_wdyrivqqijnu)
+[Beautified GCP Cluster Mapper Output:](#_fd2fdnb08ps8)
 
-[Beautified GCP Cluster Mapper Output: 6](#_fd2fdnb08ps8)
+[Reducer](#_5e6y262i3vpr)
 
-[Reducer 7](#_5e6y262i3vpr)
+[a. Method Overview:](#_xygk283bnn3x)
 
-[a. Method Overview: 7](#_xygk283bnn3x)
+[How the Reducer Script Works](#_3htdem8pp1kf)
 
-[How the Reducer Script Works 7](#_3htdem8pp1kf)
+[b. Reducer Output Local:](#_5ryr4isrzki0)
 
-[b. Reducer Code: 8](#_rf8fw6cptcjn)
+[Local System Execution Steps & Commands:](#_k7471654755)
 
-[c. Reducer Output Local: 8](#_5ryr4isrzki0)
+[GCP Master Node Local Execution Steps & Commands:](#_j02c0pe65yr2)
 
-[Local System Execution Steps & Commands: 8](#_k7471654755)
+[Beautified Local Reducer Output:](#_ns1mn1x1chvz)
 
-[GCP Master Node Local Execution Steps & Commands: 9](#_j02c0pe65yr2)
+[c. Reducer Output Hadoop (GCP Cluster):](#_9u7afylo7qqm)
 
-[Beautified Local Reducer Output: 9](#_ns1mn1x1chvz)
+[Steps & Commands:](#_vmck4njjget3)
 
-[d. Reducer Output Hadoop (GCP Cluster): 9](#_9u7afylo7qqm)
+[Beautified GCP Cluster Reducer Output:](#_9sec5qjuq4zp)
 
-[Steps & Commands: 9](#_vmck4njjget3)
+[Job Execution Details:](#_tiae3kl7jg5a)
 
-[Beautified GCP Cluster Reducer Output: 9](#_9sec5qjuq4zp)
+[Map-Reduce Framework:](#_nmqyjs10dpg9)
 
-[Job Execution Details: 9](#_tiae3kl7jg5a)
+[File System Counters:](#_onini56fhfea)
 
-[Map-Reduce Framework: 10](#_nmqyjs10dpg9)
+[Complete Commands and Explanation](#_93pbwj9rtlwu)
 
-[File System Counters: 10](#_onini56fhfea)
+[Conclusion](#_a2b78qmg0dzq)
 
-[Complete Commands and Explanation 10](#_93pbwj9rtlwu)
+[Resource Utilization Graphs](#_8xqt38syfnmk)
 
-[Conclusion 11](#_a2b78qmg0dzq)
-
-[Resource Utilization Graphs 11](#_8xqt38syfnmk)
-
-[References 12](#_2fguc7mtwzqa)
+[References](#_2fguc7mtwzqa)
 
 #
 
@@ -176,98 +172,6 @@ The wasif_mapper.py script is designed to prepare data for processing in a MapRe
 2. It reads and processes each CSV file using the read_csv function.
 3. The resulting data structures from each file are then combined based on student IDs.
 4. The combined list of student details and grades are printed to stdout, formatted to be consumed by the reducer script.
-
-### Mapper Code
-
-# !/usr/bin/env python
-
-import sys
-
-def is_date(string):
-
-try:
-
-year, month, day = map(int, string.split('-'))
-
-return True
-
-except ValueError:
-
-return False
-
-def map_grades(parts):
-
-student_id, course_id, grade = parts
-
-return {student_id: \[course_id, grade\]}
-
-def map_students(parts):
-
-student_id, name, dob = parts
-
-return {student_id: \[name, dob\]}
-
-def read_csv(file_path, data_type):
-
-data_list = \[\]
-
-with open(file_path, 'r') as file:
-
-first_line = True
-
-for line in file:
-
-if first_line:
-
-first_line = False
-
-continue
-
-line = line.strip()
-
-parts = line.split(',')
-
-if data_type == 'grades':
-
-data_list.append(map_grades(parts))
-
-elif data_type == 'students':
-
-data_list.append(map_students(parts))
-
-return data_list
-
-def main(grades_file, students_file):
-
-studentList = read_csv(students_file, 'students')
-
-gradesList = read_csv(grades_file, 'grades')
-
-student_dict = {list(student.keys())\[0\]: list(student.values())\[0\] for student in studentList}
-
-combined_list = \[\]
-
-for grade in gradesList:
-
-for student_id, grade_details in grade.items():
-
-if student_id in student_dict:
-
-student_details = student_dict\[student_id\] + grade_details
-
-combined_list.append({student_id: student_details})
-
-print(combined_list)
-
-if \__name__ == "\__main_\_":
-
-if len(sys.argv) < 3:
-
-print("Usage: python mapper.py &lt;grades_file.csv&gt; &lt;students_file.csv&gt;")
-
-else:
-
-main(sys.argv\[1\], sys.argv\[2\])
 
 ### Mapper Output Local
 
@@ -434,61 +338,6 @@ The wasif_reducer.py script is designed to simulate the "Reduce" phase in a MapR
 2. Maintains a current student context and accumulates course grades.
 3. Filters out students based on their DOB and prints details for students born on or after January 1, 1995.
 
-### Reducer Code
-
-# !/usr/bin/env python
-
-import sys
-
-current_student_id = None
-
-student_info = None
-
-course_grades = \[\]
-
-for line in sys.stdin:
-
-line = line.strip()
-
-input_data = eval(line)
-
-for data in input_data:
-
-for student_id, details in data.items():
-
-name = details\[0\]
-
-dob = details\[1\]
-
-course_id = details\[2\]
-
-grade = details\[3\]
-
-if current_student_id != student_id:
-
-if current_student_id and student_info and course_grades and student_info\[1\] >= "1995-01-01":
-
-for course, grade in course_grades:
-
-print(f'{current_student_id} {student_info\[0\]} {course} {grade}')
-
-current_student_id = student_id
-
-student_info = (name, dob)
-
-course_grades = \[\]
-
-course_grades.append((course_id, grade))
-
-if current_student_id and student_info and course_grades and student_info\[1\] >= "1995-01-01":
-
-course_grades = list(set(course_grades))
-
-print("StudentId\\tName\\tCourseId\\tGrade")
-
-for course, grade in course_grades:
-
-print(f'{current_student_id}\\t\\t{student_info\[0\]}\\t{course}\\t\\t{grade}')
 
 ### Reducer Output Local
 
