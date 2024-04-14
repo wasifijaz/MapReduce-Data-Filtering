@@ -1,0 +1,9 @@
+StudentId,CourseId,Grade
+M575757,CSD1414,pass
+M575757,CSD5050,distinction
+M575757,CSD5566,merit
+M212121,CSD1414,distinction
+M212121,CSD5050,distinction
+M212121,CSD5566,distinction
+M989898,CSD5050,merit
+M989898,CSD5566,distinction
